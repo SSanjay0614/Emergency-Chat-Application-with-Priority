@@ -8,13 +8,13 @@ const TextContainer = ({ users }) => (
   <div className='textContainer'>
     <div>
       <h1>
-        Realtime Chat Application{' '}
+        Emergency Chat Application with Priority{' '}
         <span role='img' aria-label='emoji'>
           💬
         </span>
       </h1>
       <h2>
-        Created with React, Express, Node and Socket.IO{' '}
+        Type the Message and Choose the Priority{' '}
         <span role='img' aria-label='emoji'>
           ❤️
         </span>

@@ -1,5 +1,4 @@
 .messageBox {
-  background: #f3f3f3;
   border-radius: 20px;
   padding: 5px 20px;
   color: white;
@@ -7,6 +6,25 @@
   max-width: 80%;
 }
 
+/* Priority-based styles */
+.urgent {
+  background-color: red;
+  color: white;
+  font-weight: bold;
+}
+
+.high {
+  background-color: orange;
+  color: black;
+  font-weight: bold;
+}
+
+.normal {
+  background-color: #2979ff;
+  color: white;
+}
+
+/* Existing styles for message text */
 .messageText {
   width: 100%;
   letter-spacing: 0;
@@ -56,12 +74,4 @@
 
 .colorDark {
   color: #353535;
-}
-
-.backgroundBlue {
-  background: #2979ff;
-}
-
-.backgroundLight {
-  background: #f3f3f3;
 }

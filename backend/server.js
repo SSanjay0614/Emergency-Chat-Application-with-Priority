@@ -36,13 +36,57 @@ io.on('connect', (socket) => {
     callback()
   })
 
-  socket.on('sendMessage', (message, callback) => {
-    const user = getUser(socket.id)
+  // Handle 'sendMessage' event with priority
+  socket.on('sendMessage', (message, priority = 'normal', callback) => {
+    const user = getUser(socket.id);
 
-    io.to(user.room).emit('message', { user: user.name, text: message })
+    io.to(user.room).emit('message', {
+        user: user.name,
+        text: message,
+        priority: priority, // include priority level in the message
+    });
 
-    callback()
-  })
+    callback();
+  });
+
+  // priority!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  const priorityQueue = []; // Holds messages with their priority
+
+  socket.on('sendMessage', (message, priority = 'normal', callback) => {
+    const user = getUser(socket.id);
+
+    // Add message to queue with priority
+    priorityQueue.push({
+        user: user.name,
+        room: user.room,
+        text: message,
+        priority: priority,
+    });
+
+    // Sort priorityQueue: urgent > high > normal
+    priorityQueue.sort((a, b) => {
+        const priorityLevels = { urgent: 3, high: 2, normal: 1 };
+        return priorityLevels[b.priority] - priorityLevels[a.priority];
+    });
+
+    callback();
+});
+
+setInterval(() => {
+  if (priorityQueue.length > 0) {
+      // Dequeue the highest-priority message
+      const { user, room, text, priority } = priorityQueue.shift();
+      
+      // Broadcast the message to the room
+      io.to(room).emit('message', {
+          user: user,
+          text: text,
+          priority: priority,
+      });
+  }
+}, 100); // Adjust interval as needed (e.g., every 100 ms)
+
 
   socket.on('disconnect', () => {
     const user = removeUser(socket.id)
@@ -60,6 +104,8 @@ io.on('connect', (socket) => {
   })
 })
 
-server.listen(process.env.PORT || 5000, () =>
-  console.log('Server has started.')
-)
+const PORT = process.env.PORT || 5000;
+
+server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+
+

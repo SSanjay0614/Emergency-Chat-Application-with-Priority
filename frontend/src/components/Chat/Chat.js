@@ -11,7 +11,7 @@ import './Chat.css'
 
 let socket
 
-const ENDPOINT = 'https://priority-chat-backend.onrender.com/'
+const ENDPOINT = 'http://localhost:5000'
 
 const Chat = () => {
   const [name, setName] = useState('')
@@ -19,6 +19,7 @@ const Chat = () => {
   const [users, setUsers] = useState('')
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState([])
+  const [priority, setPriority] = useState('normal') // New state for priority
 
   const search = window.location.search
 
@@ -51,7 +52,8 @@ const Chat = () => {
     event.preventDefault()
 
     if (message) {
-      socket.emit('sendMessage', message, () => setMessage(''))
+      // Send message with selected priority
+      socket.emit('sendMessage', message, priority, () => setMessage(''))
     }
   }
 
@@ -60,6 +62,16 @@ const Chat = () => {
       <div className='container'>
         <InfoBar room={room} />
         <Messages messages={messages} name={name} />
+        
+        {/* Priority Selector */}
+        <div className='priorityContainer'>
+          <select onChange={(e) => setPriority(e.target.value)} value={priority}>
+            <option value="normal">Normal</option>
+            <option value="high">High</option>
+            <option value="urgent">Urgent</option>
+          </select>
+        </div>
+        
         <Input
           message={message}
           setMessage={setMessage}
